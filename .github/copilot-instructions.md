@@ -12,3 +12,7 @@
 # New Files 
 
 - All files should use unix style line endings
+
+# React
+
+- Front end components should be broken down into small reusable components
