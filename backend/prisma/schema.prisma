@@ -33,7 +33,7 @@ model Activity {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
-  stationId   String
+  stationId   String    @db.Uuid
   station     Station   @relation(fields: [stationId], references: [id])
   activityUses ActivityUse[]
 }
@@ -45,6 +45,6 @@ model ActivityUse {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
-  activityId  String
+  activityId  String    @db.Uuid
   activity    Activity  @relation(fields: [activityId], references: [id])
 }
