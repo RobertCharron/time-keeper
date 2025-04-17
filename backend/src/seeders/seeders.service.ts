@@ -1,9 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { HashingService } from '../auth/hashing.service';
 
 @Injectable()
 export class SeedersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly hashingService: HashingService,
+  ) {}
 
   async seed() {
     try {
@@ -45,12 +49,14 @@ export class SeedersService {
           {
             name: 'Admin User',
             email: 'admin@example.com',
-            hashedPassword: 'hashed_password_here', // In production, use proper password hashing
+            hashedPassword:
+              await this.hashingService.hashPassword('password123'), // In production, use proper password hashing
           },
           {
             name: 'Regular User',
             email: 'user@example.com',
-            hashedPassword: 'hashed_password_here',
+            hashedPassword:
+              await this.hashingService.hashPassword('password123'),
           },
         ],
       });
