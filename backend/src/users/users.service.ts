@@ -1,48 +1,73 @@
 import { Injectable, ConflictException } from '@nestjs/common';
-import { PrismaClient } from '../../generated/prisma';
+import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
+import {
+  UserWithPassword,
+  UserWithoutPassword,
+  userSelect,
+  userWithoutPasswordSelect,
+} from './types/user.types';
 
 @Injectable()
 export class UsersService {
-  private prisma: PrismaClient;
+  constructor(private readonly prisma: PrismaService) {}
 
-  constructor() {
-    this.prisma = new PrismaClient();
-  }
-
-  async findByEmail(email: string) {
-    return this.prisma.user.findUnique({
+  private async findByEmailWithPassword(
+    email: string,
+  ): Promise<UserWithPassword | null> {
+    const result = await this.prisma.user.findUnique({
       where: { email },
+      select: userSelect,
     });
+
+    return result as UserWithPassword | null;
   }
 
-  async validateUser(email: string, password: string) {
-    const user = await this.findByEmail(email);
+  async validateUser(
+    email: string,
+    password: string,
+  ): Promise<UserWithoutPassword | null> {
+    const user = await this.findByEmailWithPassword(email);
     if (!user) return null;
 
-    const isPasswordValid = await bcrypt.compare(password, user.hashedPassword);
-    if (!isPasswordValid) return null;
+    try {
+      const isValid = await bcrypt.compare(password, user.hashedPassword);
+      if (!isValid) return null;
 
-    const { hashedPassword, ...result } = user;
-    return result;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { hashedPassword: _, ...result } = user;
+      return result;
+    } catch {
+      return null;
+    }
   }
 
-  async createUser(name: string, email: string, password: string) {
-    const existingUser = await this.findByEmail(email);
+  async createUser(
+    name: string,
+    email: string,
+    password: string,
+  ): Promise<UserWithoutPassword> {
+    const existingUser = await this.findByEmailWithPassword(email);
     if (existingUser) {
       throw new ConflictException('Email already exists');
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await this.prisma.user.create({
-      data: {
-        name,
-        email,
-        hashedPassword,
-      },
-    });
+    try {
+      const hashedPassword = await bcrypt.hash(password, 10);
 
-    const { hashedPassword: _, ...result } = user;
-    return result;
+      const user = await this.prisma.user.create({
+        data: {
+          name,
+          email,
+          hashedPassword,
+        },
+        select: userWithoutPasswordSelect,
+      });
+
+      return user;
+    } catch (err) {
+      console.warn('Error creating user', err.message);
+      throw new ConflictException('Could not create user');
+    }
   }
 }

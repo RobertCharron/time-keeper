@@ -1,79 +1,13 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { Public } from './public.decorator';
-import { IsEmail, IsString, MinLength } from 'class-validator';
 import {
-  ApiProperty,
   ApiTags,
   ApiOperation,
   ApiResponse,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-
-export class LoginDto {
-  @ApiProperty({
-    example: 'user@example.com',
-    description: 'The email address of the user',
-  })
-  @IsEmail()
-  email: string;
-
-  @ApiProperty({
-    example: 'password123',
-    description: 'The password for the account',
-    minLength: 6,
-  })
-  @IsString()
-  @MinLength(6)
-  password: string;
-}
-
-export class RegisterDto {
-  @ApiProperty({
-    example: 'John Doe',
-    description: 'The full name of the user',
-  })
-  @IsString()
-  name: string;
-
-  @ApiProperty({
-    example: 'user@example.com',
-    description: 'The email address for the account',
-  })
-  @IsEmail()
-  email: string;
-
-  @ApiProperty({
-    example: 'password123',
-    description: 'The password for the account',
-    minLength: 6,
-  })
-  @IsString()
-  @MinLength(6)
-  password: string;
-}
-
-class AuthResponse {
-  @ApiProperty({
-    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
-    description: 'JWT access token',
-  })
-  access_token: string;
-
-  @ApiProperty({
-    example: {
-      id: '1',
-      email: 'user@example.com',
-      name: 'John Doe',
-    },
-    description: 'User information',
-  })
-  user: {
-    id: string;
-    email: string;
-    name: string;
-  };
-}
+import { AuthService } from './auth.service';
+import { Public } from './public.decorator';
+import { LoginDto, RegisterDto, AuthResponse } from './dto/auth.dto';
 
 @ApiTags('Authentication')
 @ApiBearerAuth()
