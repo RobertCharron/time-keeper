@@ -12,8 +12,8 @@ type AuthResponse = {
   };
 };
 
-// Default to port 3001 for frontend and 3000 for backend
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+// Default to port 3000 for frontend and 3000 for backend
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
 async function handleResponse<T>(response: Response): Promise<T> {
   const data = await response.json();

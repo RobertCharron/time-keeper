@@ -115,26 +115,50 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        <div className="bg-white shadow rounded-lg p-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-6">Admin Dashboard</h1>
+        <div className="bg-white shadow-lg rounded-lg p-6">
+          <h1 className="text-2xl font-bold text-indigo-900 mb-6">Admin Dashboard</h1>
           
           <div className="space-y-8">
             <div>
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Station Statistics</h2>
+              <h2 className="text-xl font-semibold text-indigo-800 mb-4">Station Statistics</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {stations.map((station) => (
-                  <StationStats key={station.id} station={station} />
+                  <a
+                    key={station.id}
+                    href={`/admin/stations/${station.id}`}
+                    className="block"
+                  >
+                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-lg hover:from-blue-100 hover:to-indigo-100 transition-colors border border-indigo-100">
+                      <h3 className="text-lg font-medium text-indigo-900">{station.name}</h3>
+                      <p className="text-sm text-indigo-600">Total Uses: {station.totalUses}</p>
+                      <p className="text-sm text-indigo-600">
+                        Average Time: {Math.round(station.averageActivityTime / 1000 / 60)} minutes
+                      </p>
+                    </div>
+                  </a>
                 ))}
               </div>
             </div>
 
             <div>
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Activity Statistics</h2>
+              <h2 className="text-xl font-semibold text-indigo-800 mb-4">Activity Statistics</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {activities.map((activity) => (
-                  <ActivityStats key={activity.id} activity={activity} />
+                  <a
+                    key={activity.id}
+                    href={`/admin/activities/${activity.id}`}
+                    className="block"
+                  >
+                    <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-4 rounded-lg hover:from-purple-100 hover:to-pink-100 transition-colors border border-purple-100">
+                      <h3 className="text-lg font-medium text-purple-900">{activity.name}</h3>
+                      <p className="text-sm text-purple-600">Total Uses: {activity.totalUses}</p>
+                      <p className="text-sm text-purple-600">
+                        Average Time: {Math.round(activity.averageTime / 1000 / 60)} minutes
+                      </p>
+                    </div>
+                  </a>
                 ))}
               </div>
             </div>

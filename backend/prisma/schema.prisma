@@ -25,6 +25,7 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   deletedAt     DateTime?
+  activityUses  ActivityUse[]
 }
 
 model Activity {
@@ -47,4 +48,6 @@ model ActivityUse {
   deletedAt   DateTime?
   activityId  String    @db.Uuid
   activity    Activity  @relation(fields: [activityId], references: [id])
+  userId      String    @db.Uuid
+  user        User      @relation(fields: [userId], references: [id])
 }
